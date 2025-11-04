@@ -2,7 +2,7 @@
     "name": "vscode-chao-garden",
     "displayName": "vscode-chao-garden",
     "description": "Chao Garden for your VS Code",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "engines": {
         "vscode": "^1.73.0"
     },
@@ -39,7 +39,6 @@
     ],
     "main": "./out/extension/extension.js",
     "browser": "./dist/web/extension-web.js",
-    "icon": "icon.png",
     "contributes": {
         "views": {
             "explorer": [
