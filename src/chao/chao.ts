@@ -189,7 +189,8 @@ export class Chao {
 
         // Only update if the source has changed to avoid unnecessary reloads
         if (this.element.src !== newSrc) {
-            this.element.src = newSrc;
+            // Add timestamp to force GIF to restart from beginning
+            this.element.src = newSrc + '?t=' + Date.now();
         }
 
         // Mirror the gif if necessary
