@@ -45,6 +45,7 @@ function initCanvas() {
     }
     ctx.canvas.width = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
+    activeChaoObjects.forEach((chao) => chao.adjustPositionAfterResize());
 }
 
 // It cannot access the main VS Code APIs directly.

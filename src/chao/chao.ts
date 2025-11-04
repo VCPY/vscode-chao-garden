@@ -5,7 +5,6 @@ import { ChaoGifUris } from './chaoGifs';
 import { AbstractChaoState } from './state/AbstractChaoState';
 import { IdleState } from './state/IdleState';
 import { ChaoSaveState } from './chaoSaveState';
-import { SittingState } from './state/SittingState';
 
 export class Chao {
     public element: HTMLImageElement;
@@ -65,7 +64,7 @@ export class Chao {
     public get state(): AbstractChaoState {
         return this._state;
     }
-    
+
     public set state(newState: AbstractChaoState) {
         this._state = newState;
         this.updateGifForState();
@@ -168,7 +167,6 @@ export class Chao {
         this.isHovered = false;
     }
 
-
     setRandomPosition() {
         // First position the element to get accurate dimensions
         this.setDimensions();
@@ -201,6 +199,10 @@ export class Chao {
     initialize() {
         this.setRandomPosition();
         this.startAnimation();
+    }
+
+    adjustPositionAfterResize(): void {
+        this.currentPosition = this.currentPosition; // Re-apply current position to enforce boundaries
     }
 
     serialize(): ChaoSaveState {
