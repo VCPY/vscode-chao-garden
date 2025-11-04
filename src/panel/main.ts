@@ -5,6 +5,7 @@ import { ChaoSaveState } from '../chao/chaoSaveState';
 import { ChaoGifUris, createChaoTypeUris } from '../chao/chaoGifs';
 import { ChaoSize, ChaoType } from '../chao/chaoTypes';
 import { initializeGifUris } from '../gifUriHelper';
+import { CHAO_NAMES } from '../chao/names';
 
 /* This is how the VS Code API can be invoked from the panel */
 declare global {
@@ -142,7 +143,7 @@ function createRandomChao(chaoTypeUris: Record<string, ChaoGifUris>) {
     }
 
     if (!lastSpawnName) {
-        lastSpawnName = 'Sammy';
+        lastSpawnName = getRandomName();
     }
 
     // Create and initialize chao
@@ -164,6 +165,10 @@ function createSpecificChao(
     const maxChaoWarningShown = showMaxChaoWarning();
     if (maxChaoWarningShown) {
         return null;
+    }
+
+    if (!lastSpawnName) {
+        lastSpawnName = getRandomName();
     }
 
     // Create and initialize chao with specific type
@@ -290,4 +295,10 @@ function patchChaoState(
             loadChaoFromState(chaoData, chaoTypeUris);
         }
     });
+
+   
 }
+
+ function getRandomName(){
+        return CHAO_NAMES[Math.floor(Math.random() * CHAO_NAMES.length)];
+    }

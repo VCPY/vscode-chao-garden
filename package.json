@@ -40,7 +40,7 @@
                 {
                     "type": "webview",
                     "id": "chaoView",
-                    "name": "VS Code Pokémon",
+                    "name": "VS Code Chao Garden",
                     "when": "vscode-chao-garden.position == 'explorer'"
                 }
             ]

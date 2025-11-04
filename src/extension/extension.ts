@@ -151,7 +151,7 @@ export function activate(context: vscode.ExtensionContext) {
                 vscode.window
                     .showInputBox({
                         prompt: `Enter a name for the new ${selectedOption.label} chao`,
-                        placeHolder: 'e.g. Shadow',
+                        placeHolder: 'e.g. Leo',
                     })
                     .then((name) => {
                         const panel = getChaoPanel();
@@ -178,7 +178,7 @@ export function activate(context: vscode.ExtensionContext) {
                 vscode.window
                     .showInputBox({
                         prompt: 'Enter a name for the new chao',
-                        placeHolder: 'e.g. Sonic',
+                        placeHolder: 'e.g. Poppy',
                     })
                     .then((name) => {
                         // send a message
