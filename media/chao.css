@@ -1,0 +1,93 @@
+:root {
+	--container-paddding: 20px;
+	--input-padding-vertical: 6px;
+	--input-padding-horizontal: 4px;
+	--input-margin-vertical: 4px;
+	--input-margin-horizontal: 0;
+}
+
+* {
+	user-select: none;
+}
+
+body {
+	padding: 0 var(--container-paddding);
+	color: var(--vscode-foreground);
+	font-size: var(--vscode-font-size);
+	font-weight: var(--vscode-font-weight);
+	font-family: var(--vscode-font-family);
+	background-color: var(--vscode-editor-background);
+	background-attachment: fixed;
+	background-repeat: repeat-x;
+	background-position: bottom left;
+	overflow: hidden;
+	/* Hide scrollbars */
+}
+
+ol,
+ul {
+	padding-left: var(--container-paddding);
+}
+
+body>*,
+form>* {
+	margin-block-start: var(--input-margin-vertical);
+	margin-block-end: var(--input-margin-vertical);
+}
+
+*:focus {
+	outline-color: var(--vscode-focusBorder) !important;
+}
+
+a {
+	color: var(--vscode-textLink-foreground);
+}
+
+a:hover,
+a:active {
+	color: var(--vscode-textLink-activeForeground);
+}
+
+code {
+	font-size: var(--vscode-editor-font-size);
+	font-family: var(--vscode-editor-font-family);
+}
+
+input:not([type='checkbox']),
+
+input::placeholder,
+
+#chaoCanvas {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	z-index: 3;
+}
+
+img.chao {
+	-webkit-transform: scaleX(-1);
+	transform: scaleX(-1);
+	position: absolute;
+	image-rendering: auto;
+	image-rendering: smooth;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: crisp-edges;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	z-index: 10;
+}
+
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+		transform: translateX(50%) translateY(10px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateX(50%) translateY(0);
+	}
+}
+
+
