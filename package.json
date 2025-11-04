@@ -20,6 +20,11 @@
         "pixel",
         "vscode"
     ],
+    "repository": {
+        "type": "github",
+        "url": "https://github.com/VCPY/vscode-chao-garden"
+    },
+    "homepage": "https://github.com/VCPY/vscode-chao-garden",
     "license": "MIT",
     "icon": "icon.png",
     "activationEvents": [
@@ -34,6 +39,7 @@
     ],
     "main": "./out/extension/extension.js",
     "browser": "./dist/web/extension-web.js",
+    "icon": "icon.png",
     "contributes": {
         "views": {
             "explorer": [
