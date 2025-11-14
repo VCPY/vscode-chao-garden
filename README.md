@@ -3,6 +3,9 @@ Add a few chao to your VS Code IDE with this plugin!
 
 ![example](https://github.com/VCPY/vscode-chao-garden/raw/main/Chao%20Garden%20Example.gif)
 
+## Changes
+You can see the changes between the different versions in the [CHANGELOG.md](CHANGELOG.md) file.
+
 ## Installation
 You can add this extension through the VS Code marketplace or through the extension panel in your VS Code application.
 
