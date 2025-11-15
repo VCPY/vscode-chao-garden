@@ -15,11 +15,14 @@ import {
     STOP_SITTING_PROBABILITY_STEP_INCREASE,
     MAX_STOP_SITTING_PROBABILITY,
     STOP_SITTING_PROBABILITY_STEP_INTERVAL,
+    FLYING_CHANCE_AFTER_IDLE,
 } from '../calculationConstants';
 import { IdleState } from './state/IdleState';
 import { MovingLeftState } from './state/MovingLeftState';
 import { MovingRightState } from './state/MovingRightState';
 import { FallingState } from './state/FallingState';
+import { FlyingLeftState } from './state/FlyingLeft';
+import { FlyingRightState } from './state/FlyingRight';
 import { Chao } from './chao';
 import { ChaoState, MovingDirection } from './chaoState';
 import { AbstractMovingState } from './state/AbstractMovingState';
@@ -48,8 +51,9 @@ export class ChaoMovement {
         // Check if chao has reached boundaries while moving
         const atLeftBoundary = chao.currentPosition <= 0;
         const atRightBoundary = chao.currentPosition >= maxPosition;
-        const wasMovingLeft = chao.state.state === ChaoState.movingLeft;
-        const wasMovingRight = chao.state.state === ChaoState.movingRight;
+        const state = chao.state.state;
+        const wasMovingLeft = state === ChaoState.movingLeft || state === ChaoState.flyingLeft;
+        const wasMovingRight = state === ChaoState.movingRight || state === ChaoState.flyingRight;
 
         if (
             (atLeftBoundary && wasMovingLeft) ||
@@ -66,7 +70,10 @@ export class ChaoMovement {
     }
 
     updateState(chao: Chao) {
+        let shouldIdle: boolean;
+        let castedMovingState: AbstractMovingState;
         const random = Math.random();
+        const currentTime = Date.now();
 
         switch (chao.state.state) {
             case ChaoState.idle:
@@ -100,15 +107,29 @@ export class ChaoMovement {
                         const atRightBoundary =
                             chao.currentPosition >= maxPosition;
 
+                        const shouldFly =
+                            Math.random() < FLYING_CHANCE_AFTER_IDLE;
+
                         if (atLeftBoundary) {
-                            chao.state = new MovingRightState();
+                            chao.state = shouldFly
+                                ? new FlyingRightState()
+                                : new MovingRightState();
                         } else if (atRightBoundary) {
-                            chao.state = new MovingLeftState();
+                            chao.state = shouldFly
+                                ? new FlyingLeftState()
+                                : new MovingLeftState();
                         } else {
-                            chao.state =
-                                Math.random() < 0.5
-                                    ? new MovingLeftState()
-                                    : new MovingRightState();
+                            if (shouldFly) {
+                                chao.state =
+                                    Math.random() < 0.5
+                                        ? new FlyingLeftState()
+                                        : new FlyingRightState();
+                            } else {
+                                chao.state =
+                                    Math.random() < 0.5
+                                        ? new MovingLeftState()
+                                        : new MovingRightState();
+                            }
                         }
 
                         this.movingStartTime = Date.now(); // Track when moving period started
@@ -119,11 +140,10 @@ export class ChaoMovement {
 
             case ChaoState.movingLeft:
             case ChaoState.movingRight:
-                var castedMovingState = chao.state as AbstractMovingState;
+                castedMovingState = chao.state as AbstractMovingState;
                 castedMovingState.movingSteps++;
 
                 // Chance to fall while walking, but only after moving for at least 2 seconds
-                const currentTime = Date.now();
                 const timeSinceLastFall = currentTime - this.lastFallTime;
                 const timeMoving =
                     currentTime - (this.movingStartTime || currentTime);
@@ -144,47 +164,54 @@ export class ChaoMovement {
                     break;
                 }
 
-                // Calculate dynamic idle probability that increases with movement duration
-                const baseIdleProbability = BASE_IDLE_PROBABILITY;
-                const stepIncrease =
-                    Math.floor(
-                        castedMovingState.movingSteps /
-                            IDLE_PROBABILITY_STEP_INTERVAL,
-                    ) * IDLE_PROBABILITY_STEP_INCREASE;
-                const maxIdleProbability = MAX_IDLE_PROBABILITY;
-                const currentIdleProbability = Math.min(
-                    baseIdleProbability + stepIncrease,
-                    maxIdleProbability,
+                shouldIdle = this.shouldIdle(
+                    castedMovingState.movingSteps,
+                    currentTime,
                 );
 
-                const movingDuration =
-                    currentTime - (this.movingStartTime || currentTime);
-                if (
-                    random < currentIdleProbability &&
-                    movingDuration >= MIN_MOVING_TIME_MS
-                ) {
+                if (shouldIdle) {
                     chao.state = new IdleState(chao);
                     this.movingStartTime = null;
                     this.hasSatDuringIdle = false;
                 }
                 // Otherwise continue in current direction (no state change needed)
                 break;
+            case ChaoState.flyingLeft:
+            case ChaoState.flyingRight:
+                castedMovingState = chao.state as AbstractMovingState;
 
+                shouldIdle = this.shouldIdle(
+                    castedMovingState.movingSteps,
+                    currentTime,
+                );
+
+                if (shouldIdle) {
+                    chao.state = new IdleState(chao);
+                    this.movingStartTime = null;
+                    this.hasSatDuringIdle = false;
+                }
+                // Otherwise continue in current direction (no state change needed)
+                break;
             case ChaoState.sitting:
                 this.sittingSteps++;
 
                 const sittingCurrentTime = Date.now();
-                const timeSitting = sittingCurrentTime - (this.sittingStartTime || sittingCurrentTime);
-                
+                const timeSitting =
+                    sittingCurrentTime -
+                    (this.sittingStartTime || sittingCurrentTime);
+
                 // Only allow stopping after minimum sitting time
                 if (timeSitting >= MIN_SITTING_TIME_MS) {
                     // Calculate dynamic stop sitting probability that increases with sitting duration
-                    const baseStopSittingProbability = BASE_STOP_SITTING_PROBABILITY;
+                    const baseStopSittingProbability =
+                        BASE_STOP_SITTING_PROBABILITY;
                     const stepIncrease =
                         Math.floor(
-                            this.sittingSteps / STOP_SITTING_PROBABILITY_STEP_INTERVAL,
+                            this.sittingSteps /
+                                STOP_SITTING_PROBABILITY_STEP_INTERVAL,
                         ) * STOP_SITTING_PROBABILITY_STEP_INCREASE;
-                    const maxStopSittingProbability = MAX_STOP_SITTING_PROBABILITY;
+                    const maxStopSittingProbability =
+                        MAX_STOP_SITTING_PROBABILITY;
                     const currentStopSittingProbability = Math.min(
                         baseStopSittingProbability + stepIncrease,
                         maxStopSittingProbability,
@@ -203,6 +230,27 @@ export class ChaoMovement {
                 // Falling state is handled by timer, no position updates during falling
                 break;
         }
+    }
+
+    shouldIdle(movingSteps: number, currentTime: number): boolean {
+        // Calculate dynamic idle probability that increases with movement duration
+        const random = Math.random();
+        const baseIdleProbability = BASE_IDLE_PROBABILITY;
+        const stepIncrease =
+            Math.floor(movingSteps / IDLE_PROBABILITY_STEP_INTERVAL) *
+            IDLE_PROBABILITY_STEP_INCREASE;
+        const maxIdleProbability = MAX_IDLE_PROBABILITY;
+        const currentIdleProbability = Math.min(
+            baseIdleProbability + stepIncrease,
+            maxIdleProbability,
+        );
+
+        const movingDuration =
+            currentTime - (this.movingStartTime || currentTime);
+        return (
+            random < currentIdleProbability &&
+            movingDuration >= MIN_MOVING_TIME_MS
+        );
     }
 
     // The chao moves a bit while falling and then stops

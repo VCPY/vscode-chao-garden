@@ -1,13 +1,16 @@
 import { ChaoType } from './chaoTypes';
 
-export type ChaoGifUris = {
-    idle: string;
-    walking: string;
-    falling: string;
-    sitting: string;
-    standing_happy: string;
-    sitting_happy: string;
-};
+const gifFiles = [
+    'idle',
+    'walking',
+    'falling',
+    'sitting',
+    'standing_happy',
+    'sitting_happy',
+    'flying',
+];
+
+export type ChaoGifUris = Record<string, string>;
 
 let chaoTypeUrisSingleton: Record<string, ChaoGifUris> | null = null;
 
@@ -19,23 +22,19 @@ export function createChaoTypeUris(
         return chaoTypeUrisSingleton;
     }
 
-    const gifStates = [
-        'idle',
-        'walking',
-        'falling',
-        'sitting',
-        'standing_happy',
-        'sitting_happy',
-    ] as const;
-
-    const createGifUri = (chaoType: ChaoType, state: string): string => {
-        const filename = `${chaoType}_${state}.gif`;
+    const createGifUri = (chaoType: ChaoType, gifFile: string): string => {
+        const filename = `${chaoType}_${gifFile}.gif`;
         return `${baseUrl}/${chaoType}/${filename}`;
     };
 
+    const extractStateName = (gifFile: string): string => {
+        return gifFile.replace('.gif', '');
+    };
+
     chaoTypeUrisSingleton = Object.values(ChaoType).reduce((acc, chaoType) => {
-        acc[chaoType] = gifStates.reduce((gifs, state) => {
-            gifs[state] = createGifUri(chaoType, state);
+        acc[chaoType] = gifFiles.reduce((gifs, gifFile) => {
+            const stateName = extractStateName(gifFile);
+            gifs[stateName] = createGifUri(chaoType, gifFile);
             return gifs;
         }, {} as ChaoGifUris);
         return acc;

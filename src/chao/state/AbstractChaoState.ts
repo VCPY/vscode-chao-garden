@@ -13,7 +13,7 @@ export abstract class AbstractChaoState {
      * Get this state's corresponding GIF filename part
      * Must be implemented by subclasses
      */
-    abstract getStateName(): string;
+    abstract getGifStateName(): string;
 
     /**
      * Abstract method to move chao based on the current state
@@ -22,7 +22,7 @@ export abstract class AbstractChaoState {
     abstract moveBasedOnState(chao: Chao): void;
 
     getGif(chaoType: string): string {
-        const stateName = this.getStateName();
+        const stateName = this.getGifStateName();
         return generateGifUri(chaoType, stateName);
     }
 

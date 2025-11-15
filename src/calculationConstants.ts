@@ -2,6 +2,7 @@
 
 export const SITTING_CHANCE_WHILE_IDLE: number = 0.01; // 1% chance to sit when idle
 export const MOVEMENT_CHANCE_AFTER_IDLE: number = 0.3; // 30% chance to start moving after idle period
+export const FLYING_CHANCE_AFTER_IDLE: number = 0.005; // 0,5% chance to start flying after idle period
 
 export const FALLING_CHANCE_WHILE_MOVING: number = 0.001; // 0.1% chance to fall while walking
 

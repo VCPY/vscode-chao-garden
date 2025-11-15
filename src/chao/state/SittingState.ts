@@ -11,7 +11,7 @@ export class SittingState extends AbstractChaoState {
         this.chao = chao;
     }
 
-    getStateName(): string {
+    getGifStateName(): string {
         return 'sitting';
     }
 

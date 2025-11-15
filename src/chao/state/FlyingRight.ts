@@ -1,16 +1,17 @@
+import { Chao } from '../chao';
 import { ChaoState } from '../chaoState';
 import { AbstractMovingState } from './AbstractMovingState';
 
-export class MovingRightState extends AbstractMovingState {
+export class FlyingRightState extends AbstractMovingState {
     constructor() {
-        super(ChaoState.movingRight);
+        super(ChaoState.flyingRight);
     }
 
     getGifStateName(): string {
-        return 'walking';
+        return 'flying';
     }
 
-    moveBasedOnState(chao: any): void {
+    moveBasedOnState(chao: Chao): void {
         chao.currentPosition += chao.speed;
     }
 }

@@ -5,6 +5,8 @@ export enum ChaoState {
     movingRight,
     falling,
     sitting,
+    flyingLeft,
+    flyingRight,
 }
 
 export enum MovingDirection {

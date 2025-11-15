@@ -13,7 +13,7 @@ export class IdleState extends AbstractChaoState {
         this.idleStartTime = Date.now();
     }
 
-    getStateName(): string {
+    getGifStateName(): string {
         return 'idle';
     }
 

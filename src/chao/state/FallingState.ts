@@ -12,7 +12,7 @@ export class FallingState extends AbstractChaoState {
         this.canMoveWhileFalling = true;
     }
 
-    getStateName(): string {
+    getGifStateName(): string {
         return 'falling';
     }
 
