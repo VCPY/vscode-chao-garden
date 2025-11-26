@@ -59,10 +59,7 @@ export function activate(context: vscode.ExtensionContext) {
                 ) {
                     await vscode.commands.executeCommand('chaoView.focus');
                 } else {
-                    ChaoPanel.createOrShow(
-                        context.extensionUri,
-                        getConfiguredSize(),
-                    );
+                    ChaoPanel.createOrShow(context.extensionUri);
                 }
             },
         ),
@@ -128,11 +125,7 @@ export function activate(context: vscode.ExtensionContext) {
                 webviewPanel.webview.options = getWebviewOptions(
                     context.extensionUri,
                 );
-                ChaoPanel.revive(
-                    webviewPanel,
-                    context.extensionUri,
-                    getConfiguredSize(),
-                );
+                ChaoPanel.revive(webviewPanel, context.extensionUri);
             },
         });
     }
@@ -448,7 +441,7 @@ class ChaoPanel extends ChaoWebviewContainer implements IChaoPanel {
 
     public readonly _panel: vscode.WebviewPanel;
 
-    public static createOrShow(extensionUri: vscode.Uri, chaoSize: ChaoSize) {
+    public static createOrShow(extensionUri: vscode.Uri) {
         const column = vscode.window.activeTextEditor
             ? vscode.window.activeTextEditor.viewColumn
             : undefined;
@@ -466,22 +459,14 @@ class ChaoPanel extends ChaoWebviewContainer implements IChaoPanel {
             getWebviewOptions(extensionUri),
         );
 
-        ChaoPanel.currentPanel = new ChaoPanel(panel, extensionUri, chaoSize);
+        ChaoPanel.currentPanel = new ChaoPanel(panel, extensionUri);
     }
 
-    public static revive(
-        panel: vscode.WebviewPanel,
-        extensionUri: vscode.Uri,
-        chaoSize: ChaoSize,
-    ) {
-        ChaoPanel.currentPanel = new ChaoPanel(panel, extensionUri, chaoSize);
+    public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
+        ChaoPanel.currentPanel = new ChaoPanel(panel, extensionUri);
     }
 
-    private constructor(
-        panel: vscode.WebviewPanel,
-        extensionUri: vscode.Uri,
-        size: ChaoSize,
-    ) {
+    private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
         super(extensionUri);
 
         this._panel = panel;
