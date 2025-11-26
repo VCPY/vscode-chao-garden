@@ -103,6 +103,19 @@ export function activate(context: vscode.ExtensionContext) {
                 if (e.affectsConfiguration('vscode-chao-garden.position')) {
                     void updateExtensionPositionContext();
                 }
+
+                if (e.affectsConfiguration('workbench.sideBar.location')) {
+                    const panel = getChaoPanel();
+                    if (panel) {
+                        const sideBarPosition = vscode.workspace
+                            .getConfiguration('workbench')
+                            .get<string>('sideBar.location', 'left');
+                        panel.getWebview().postMessage({
+                            command: 'setSidebarPosition',
+                            position: sideBarPosition,
+                        });
+                    }
+                }
             },
         ),
     );
@@ -315,6 +328,16 @@ class ChaoWebviewContainer implements IChaoPanel {
     public update() {}
 
     protected _getHtmlForWebview(webview: vscode.Webview) {
+        const sideBarPosition = vscode.workspace
+            .getConfiguration('workbench')
+            .get<string>('sideBar.location', 'left');
+        setTimeout(() => {
+            webview.postMessage({
+                command: 'setSidebarPosition',
+                position: sideBarPosition,
+            });
+        }, 100);
+
         // Local path to main script run in the webview
         const scriptPathOnDisk = vscode.Uri.joinPath(
             this._extensionUri,
@@ -366,7 +389,11 @@ class ChaoWebviewContainer implements IChaoPanel {
 					Use a content security policy to only allow loading images from https or from our extension directory,
 					and only allow scripts that have a specific nonce.
 				-->
-				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'nonce-${nonce}'; img-src ${webview.cspSource} https:; script-src 'nonce-${nonce}';
+				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${
+                    webview.cspSource
+                } 'nonce-${nonce}'; img-src ${
+            webview.cspSource
+        } https:; script-src 'nonce-${nonce}';
                 font-src ${webview.cspSource};">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 				<link href="${stylesResetUri}" rel="stylesheet" nonce="${nonce}">

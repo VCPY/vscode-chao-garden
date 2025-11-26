@@ -20,6 +20,7 @@ declare global {
 const activeChaoObjects: Chao[] = [];
 let _stateApi: VscodeStateApi | undefined = undefined;
 let currentGifSize: ChaoSize = ChaoSize.medium;
+let sidebarPosition: 'left' | 'right' = 'left';
 // Temporary holder for name passed from extension when spawning
 let lastSpawnName: string | null = null;
 
@@ -28,6 +29,10 @@ export function getStateApi(): VscodeStateApi {
         _stateApi = acquireVsCodeApi();
     }
     return _stateApi;
+}
+
+export function getSidebarPosition(): 'left' | 'right' {
+    return sidebarPosition;
 }
 
 let canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D;
@@ -121,6 +126,9 @@ export function chaoPanelApp(chaoBaseUri: string, initialGifSize: ChaoSize) {
                     chao.setGifSize(currentGifSize);
                     chao.setDimensionsAndPosition();
                 });
+                break;
+            case 'setSidebarPosition':
+                sidebarPosition = message.position as 'left' | 'right';
                 break;
             case 'vscodeShowWarningMessage':
                 // Forward warning to extension

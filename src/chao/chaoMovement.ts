@@ -16,6 +16,8 @@ import {
     MAX_STOP_SITTING_PROBABILITY,
     STOP_SITTING_PROBABILITY_STEP_INTERVAL,
     FLYING_CHANCE_AFTER_IDLE,
+    CODE_WATCH_PROBABILITY,
+    PAUSE_BETWEEN_CODE_WATCH_MS,
 } from '../calculationConstants';
 import { IdleState } from './state/IdleState';
 import { MovingLeftState } from './state/MovingLeftState';
@@ -27,6 +29,9 @@ import { Chao } from './chao';
 import { ChaoState, MovingDirection } from './chaoState';
 import { AbstractMovingState } from './state/AbstractMovingState';
 import { SittingState } from './state/SittingState';
+import { getSidebarPosition } from '../panel/main';
+import { LookAtCodeToLeftState } from './state/LookAtCodeToLeftState';
+import { LookAtCodeToRightState } from './state/LookAtCodeToRightState';
 
 export class ChaoMovement {
     // private sittingTimer: NodeJS.Timeout | null = null;
@@ -37,6 +42,9 @@ export class ChaoMovement {
     private fallingTimer: NodeJS.Timeout | null = null;
     private fallingMovementTimer: NodeJS.Timeout | null = null;
     public lastFallTime: number = 0;
+
+    private lookAtCodeTimer: NodeJS.Timeout | null = null;
+    private lastLookAtCodeTime: number = 0;
 
     public movingStartTime: number | null = null;
 
@@ -52,8 +60,10 @@ export class ChaoMovement {
         const atLeftBoundary = chao.currentPosition <= 0;
         const atRightBoundary = chao.currentPosition >= maxPosition;
         const state = chao.state.state;
-        const wasMovingLeft = state === ChaoState.movingLeft || state === ChaoState.flyingLeft;
-        const wasMovingRight = state === ChaoState.movingRight || state === ChaoState.flyingRight;
+        const wasMovingLeft =
+            state === ChaoState.movingLeft || state === ChaoState.flyingLeft;
+        const wasMovingRight =
+            state === ChaoState.movingRight || state === ChaoState.flyingRight;
 
         if (
             (atLeftBoundary && wasMovingLeft) ||
@@ -72,7 +82,7 @@ export class ChaoMovement {
     updateState(chao: Chao) {
         let shouldIdle: boolean;
         let castedMovingState: AbstractMovingState;
-        const random = Math.random();
+        let random = Math.random();
         const currentTime = Date.now();
 
         switch (chao.state.state) {
@@ -90,7 +100,43 @@ export class ChaoMovement {
                     break;
                 }
 
-                // Only allow state changes after being idle for at least X seconds
+                const timeSinceLastLookAtCode =
+                    Date.now() - this.lastLookAtCodeTime;
+                if (timeSinceLastLookAtCode >= PAUSE_BETWEEN_CODE_WATCH_MS) {
+                   
+                    const canvasWidth = window.innerWidth;
+                    const gifWidth = chao.getGifWidth();
+                    const maxPosition = canvasWidth - gifWidth;
+                    const leftThreshold = maxPosition * 0.20;
+                    const rightThreshold = maxPosition * 0.80;
+                    const isOnLeftSide = chao.currentPosition <= leftThreshold;
+                    const isOnRightSide =
+                        chao.currentPosition >= rightThreshold;
+
+                    const explorerPosition = getSidebarPosition();
+                    const explorerOnLeft = explorerPosition === 'left';
+                    const explorerOnRight = explorerPosition === 'right';
+
+                    if (isOnLeftSide && explorerOnRight) {
+                        random = Math.random();
+                        if (random < CODE_WATCH_PROBABILITY) {
+                            chao.state = new LookAtCodeToLeftState();
+                            this.startLookingAtCodeTimer(chao);
+                            break;
+                        }
+                    }
+
+                    if (isOnRightSide && explorerOnLeft) {
+                        random = Math.random();
+                        if (random < CODE_WATCH_PROBABILITY) {
+                            chao.state = new LookAtCodeToRightState();
+                            this.startLookingAtCodeTimer(chao);
+                            break;
+                        }
+                    }
+                }
+
+                // Only allow movement after being idle for at least X seconds
                 const now = Date.now();
                 var castedIdleState = chao.state as IdleState;
                 const idleDuration =
@@ -229,6 +275,9 @@ export class ChaoMovement {
             case ChaoState.falling:
                 // Falling state is handled by timer, no position updates during falling
                 break;
+            case ChaoState.lookingAtCode:
+                // Looking At Code state is handled by timer, no position updates during this state
+                break;
         }
     }
 
@@ -281,6 +330,18 @@ export class ChaoMovement {
         }, fallingDuration);
     }
 
+    startLookingAtCodeTimer(chao: Chao) {
+        if (this.lookAtCodeTimer) {
+            clearTimeout(this.lookAtCodeTimer);
+        }
+
+        this.lastLookAtCodeTime = Date.now();
+        this.lookAtCodeTimer = setTimeout(() => {
+            chao.state = new IdleState(chao);
+            this.lookAtCodeTimer = null;
+        }, 11500);
+    }
+
     stop() {
         if (this.fallingTimer) {
             clearTimeout(this.fallingTimer);
@@ -289,6 +350,10 @@ export class ChaoMovement {
         if (this.fallingMovementTimer) {
             clearTimeout(this.fallingMovementTimer);
             this.fallingMovementTimer = null;
+        }
+        if (this.lookAtCodeTimer) {
+            clearTimeout(this.lookAtCodeTimer);
+            this.lookAtCodeTimer = null;
         }
     }
 }

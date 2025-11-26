@@ -8,6 +8,8 @@ const gifFiles = [
     'standing_happy',
     'sitting_happy',
     'flying',
+    'code_watch_to_right',
+    'code_watch_to_left',
 ];
 
 export type ChaoGifUris = Record<string, string>;
