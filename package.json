@@ -2,7 +2,7 @@
     "name": "vscode-chao-garden",
     "displayName": "vscode-chao-garden",
     "description": "Chao Garden for your VS Code",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "engines": {
         "vscode": "^1.73.0"
     },
