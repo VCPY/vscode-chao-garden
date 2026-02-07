@@ -150,10 +150,13 @@ export function activate(context: vscode.ExtensionContext) {
                 // Send message to webview to spawn a specific chao
                 vscode.window
                     .showInputBox({
-                        prompt: `Enter a name for the new ${selectedOption.label} chao`,
+                        prompt: `Enter a name for the new ${selectedOption.label} chao, leave empty for random name`,
                         placeHolder: 'e.g. Leo',
                     })
                     .then((name) => {
+                        if (name === undefined) {
+                            return;
+                        }
                         const panel = getChaoPanel();
                         if (panel) {
                             panel.getWebview().postMessage({
@@ -177,11 +180,14 @@ export function activate(context: vscode.ExtensionContext) {
             async () => {
                 vscode.window
                     .showInputBox({
-                        prompt: 'Enter a name for the new chao',
+                        prompt: 'Enter a name for the new chao, leave empty for random name',
                         placeHolder: 'e.g. Poppy',
                     })
                     .then((name) => {
                         // send a message
+                        if (name === undefined) {
+                            return;
+                        }
                         const panel = getChaoPanel();
                         if (panel) {
                             panel.getWebview().postMessage({
