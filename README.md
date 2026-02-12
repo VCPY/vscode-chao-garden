@@ -4,7 +4,7 @@ Add a few chao to your VS Code IDE with this plugin!
 ![example](https://github.com/VCPY/vscode-chao-garden/raw/main/Chao%20Garden%20Example.gif)
 
 ## Changes
-You can see the changes between the different versions in the [CHANGELOG.md](CHANGELOG.md) file.
+You can see the changes between the different versions in the [CHANGELOG.md](https://github.com/VCPY/vscode-chao-garden/blob/main/CHANGELOG.MD) file.
 
 ## Installation
 You can add this extension through the VS Code marketplace or through the extension panel in your VS Code application.
@@ -18,6 +18,8 @@ In the settings, you can choose the size of the chao. Choose between small, medi
 A chao garden window will appear in your explorer tree. You can add a specific type of chao or add a random chao, and name them!
 
 They will explore their new home immeditately. Have you tried hovering over them with your mouse?
+
+To see everything a chao can do, have a look at [CHAO.md](https://github.com/VCPY/vscode-chao-garden/blob/main/CHAO.MD) 
 
 ## References
 
