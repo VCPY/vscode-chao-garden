@@ -2,15 +2,15 @@
 
 export const SITTING_CHANCE_WHILE_IDLE: number = 0.01; // 1% chance to sit when idle
 export const MOVEMENT_CHANCE_AFTER_IDLE: number = 0.3; // 30% chance to start moving after idle period
-export const FLYING_CHANCE_AFTER_IDLE: number = 0.005; // 0,5% chance to start flying after idle period
+export const FLYING_CHANCE_AFTER_IDLE: number = 0.15; // 20% chance to start flying after idle period
 
 export const FALLING_CHANCE_WHILE_MOVING: number = 0.001; // 0.1% chance to fall while walking
 
 export const BASE_IDLE_PROBABILITY: number = 0.01; // Starting idle probability (1%)
 export const IDLE_PROBABILITY_STEP_INCREASE: number = 0.005; // Increase per step interval (0.5%)
 export const MAX_IDLE_PROBABILITY: number = 0.25; // Maximum idle probability (25%)
-export const CODE_WATCH_PROBABILITY: number = 0.02; // 2% chance to look at code when idle and facing the screen
-export const PAUSE_BETWEEN_CODE_WATCH_MS: number = 120000; // Minimum 120 seconds between code watching sessions
+export const CODE_WATCH_PROBABILITY: number = 0.017; // 2% chance to look at code when idle and facing the screen
+export const PAUSE_BETWEEN_CODE_WATCH_MS: number = 300000; // Minimum 5 minutes between code watching sessions
 
 export const MIN_IDLE_TIME_MS: number = 7000; // Minimum time idle before allowing transitions (7 seconds)
 export const MIN_MOVING_TIME_MS: number = 7000; // Minimum time moving before considering idle (7 seconds)
