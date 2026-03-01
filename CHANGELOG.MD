@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.1.1] - 2026-03-01
+- Fix link to Chao.md in README.MD
+
 ## [1.1.0] - 2026-03-01
 - Add chao flying animation
 - Add chao "looking at code" animation
