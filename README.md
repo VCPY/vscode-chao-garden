@@ -19,7 +19,7 @@ A chao garden window will appear in your explorer tree. You can add a specific t
 
 They will explore their new home immeditately. Have you tried hovering over them with your mouse?
 
-To see everything a chao can do, have a look at [CHAO.md](https://github.com/VCPY/vscode-chao-garden/blob/main/CHAO.MD) 
+To see everything a chao can do, have a look at [CHAO.md](https://github.com/VCPY/vscode-chao-garden/blob/main/CHAO.md) 
 
 ## References
 
